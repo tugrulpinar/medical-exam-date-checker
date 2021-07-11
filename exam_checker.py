@@ -79,8 +79,8 @@ class DateChecker:
         # NEXT
         self.find_click("masterPage_cphPageBody_btnNext")
         # LOGIN
-        self.fill_out("txtElig_ELIGIBILITY_NUMBER", "042205640")
-        self.fill_out("txtElig_ISVALIDLASTNAME", "gok")
+        self.fill_out("txtElig_ELIGIBILITY_NUMBER", os.environ["user_pwd"])
+        self.fill_out("txtElig_ISVALIDLASTNAME", os.environ["username"])
 
         # NEXT
         for _ in range(3):
@@ -123,7 +123,7 @@ class DateChecker:
         for item in self.list_of_locations:
             print(f"Looking at {item} calendar...")
             self.location_book[item.split(":")[1].strip(
-            )] = self.location_finder(item, "M2R3S5")
+            )] = self.location_finder(item, os.environ["zipcode"])
             self.go_back()
 
     def far_locations(self):
@@ -169,9 +169,9 @@ class DateChecker:
 
     def send_email(self, url, availability_info):
         msg = EmailMessage()
-        recipients = ["tugrul.pinar@hotmail.com", "senagokk@gmail.com"]
+        recipients = [os.environ["e_client"]]
         msg["Subject"] = "Test Centre is available!"
-        msg["From"] = "tugrulpinar96@gmail.com"
+        msg["From"] = os.environ["e_user"]
         msg["Bcc"] = ",".join(recipients)
         msg.set_content(
             f"Hi,\n\nThere may be some seats available in {availability_info} ! Check out the link:\n{url}")
@@ -179,7 +179,7 @@ class DateChecker:
         try:
             with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
 
-                smtp.login("tugrulpinar96@gmail.com", "ynqajlbxnhawuvyl")
+                smtp.login(os.environ["e_user"], os.environ["e_pwd"])
                 smtp.send_message(msg)
                 print("Email sent!")
         except Exception as e:
